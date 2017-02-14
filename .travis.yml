@@ -21,6 +21,8 @@ matrix:
         # force travis to use it
         - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
         - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
+        # prepare cpp-coveralls gcov invocation
+        - export COVERALLS_GCOV="--gcov-options '\-lp'"
 
     - compiler: clang
       env: COMPILER=clang-3.9
@@ -35,6 +37,9 @@ matrix:
         - sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-3.9 100
         - sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-3.9 100
         - export CC="/usr/bin/clang" CXX="/usr/bin/clang++"
+        # prepare cpp-coveralls gcov invocation
+        - export COVERALLS_GCOV="--gcov llvm-cov --gcov-options 'gcov \-lp'"
+      
 
 install:
   - pip install --user cpp-coveralls
@@ -61,5 +66,7 @@ script:
   - ./bin/sexpr-cpp-tests
 
 after_success:
-  - coveralls --exclude build/CMakeFiles --exclude tests --root .. --build-root . --gcov-options '\-lp'
+  # yeah I know, this looks pretty retarded... but cpp-coveralls has problems with the variable arguments 
+  # if you can make it less retarded submit a pr
+  - sh -c "`printf "cpp-coveralls --exclude build/CMakeFiles --exclude tests --root .. --build-root . $COVERALLS_GCOV"`"
   
