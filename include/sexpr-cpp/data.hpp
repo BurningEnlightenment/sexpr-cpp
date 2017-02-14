@@ -68,23 +68,12 @@ enum class node_type
 };
 
 
-template< typename TVisitor,
-    class... TStrings,
-    template<class, class...> class... TLists,
-    class... TStringTraits,
-    class... TListTraits >
-inline auto visit(TVisitor &&v, const basic_node<TStrings, TLists, TStringTraits, TListTraits>&... nodes);
-
-
 template< class TString,
     template<class, class...> class TList,
     class TStringTraits,
     class TListTraits >
 class basic_node
 {
-    template< typename TVisitor, class... TStrings, template<class, class...> class... TLists, class... TTStringTraits, class... TTListTraits >
-    friend auto visit(TVisitor &&, const basic_node<TStrings, TLists, TTStringTraits, TTListTraits>&...);
-
 public:
     using string = TString;
     using string_traits = TStringTraits;
@@ -572,17 +561,6 @@ private:
 
     content mContent;
 };
-
-
-template< typename TVisitor,
-    class... TStrings,
-    template<class, class...> class... TLists,
-    class... TStringTraits,
-    class... TListTraits>
-inline auto visit(TVisitor &&v, const basic_node<TStrings, TLists, TStringTraits, TListTraits>&... nodes)
-{
-    return boost::apply_visitor(std::forward<TVisitor>(v), nodes.mContent...);
-}
 
 
 template< class TString,

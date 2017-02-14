@@ -92,31 +92,5 @@ BOOST_AUTO_TEST_CASE(copy_ctor)
 
 BOOST_AUTO_TEST_SUITE_END()
 
-BOOST_AUTO_TEST_CASE(tmp_case)
-{
-    using namespace std::string_literals;
-    node n0;
-    BOOST_TEST(n0.is_list());
-
-    node n1{std::string(), std::string()};
-    BOOST_TEST(n1.is_list());
-
-    for (auto it = n1.cbegin(), end = n1.cend(); it != end; ++it)
-    {
-        BOOST_TEST(it->is_string());
-    }
-    n1.clear();
-    n1.emplace_back(""s);
-    n1.swap(n0);
-    BOOST_TEST(n1 == n1);
-
-    bool x = visit([](const auto &e) { return e.empty(); }, n1);
-
-    n0 = ""s;
-    BOOST_TEST(n0.is_string());
-
-    //n0 = { std::string(), node()}
-}
-
 
 BOOST_AUTO_TEST_SUITE_END()
