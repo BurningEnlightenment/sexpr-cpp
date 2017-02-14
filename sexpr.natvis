@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+  <!-- sexpr::basic_node -->
+  <Type Name="sexpr::basic_node&lt;*&gt;" >
+    <DisplayString Condition="mContent.which_ == 0">{{list-node | {*((list*)mContent.storage_.data_.buf)}}}</DisplayString>
+    <DisplayString Condition="mContent.which_ == 1">{{string-node | {*((string*)mContent.storage_.data_.buf)}}}</DisplayString>
+    <DisplayString>{{invalid-state}}</DisplayString>
+    <Expand HideRawView="true">
+      <Item Name="content" Condition="mContent.which_ == 1" Optional="true">*((string*)mContent.storage_.data_.buf)</Item>
+      <ExpandedItem Condition="mContent.which_ == 0" Optional="true">*((list*)mContent.storage_.data_.buf)</ExpandedItem>
+    </Expand>
+  </Type>
+
+</AutoVisualizer>

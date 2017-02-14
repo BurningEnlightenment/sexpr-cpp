@@ -7,14 +7,8 @@
 #include "boost-unit-test.hpp"
 #include <boost/throw_exception.hpp>
 
-#include <sexpr-cpp/data.hpp>
-
 using namespace boost::unit_test;
 
-BOOST_AUTO_TEST_CASE(tmp_case)
-{
-
-}
 
 // we can't use the macros to specify the module name, because the
 // defining header is already included in the precompiled header...

@@ -17,9 +17,14 @@ add_executable(sexpr-cpp-tests
     sexpr-cpp-tests.cpp
     boost-unit-test.hpp
 
+    data-helpers.hpp
+    data-tests.cpp
 
     # project headers for IDE support
     "${_INCLUDE_DIR}/data.hpp"
+
+    # vc++ debugger visualizer information
+    "${CMAKE_SOURCE_DIR}/sexpr.natvis"
 )
 target_link_libraries(sexpr-cpp-tests
     PUBLIC
