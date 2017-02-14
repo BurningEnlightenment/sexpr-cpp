@@ -11,7 +11,7 @@ env:
 matrix:
   include:
     - compiler: gcc
-      env: COMPILER=g++-5
+      env: COMPILER=gcc-5
       before_install:
         # install latest gcc 5
         - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
@@ -29,15 +29,13 @@ matrix:
         - sudo apt-add-repository -y 'deb http://llvm.org/apt/trusty llvm-toolchain-trusty-3.9 main'
         - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
         - sudo apt-get update -qq
-        - sudo apt-get install -qq -y clang-3.9 gcc-5 g++-5
+        - sudo apt-get install -qq -y clang-3.9 libstdc++-5-dev
         # force travis to use it
         - sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-3.9 100
         - sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-3.9 100
         - export CC="/usr/bin/clang" CXX="/usr/bin/clang++"
 
 install:
-  - echo $PATH
-  
   # install latest cmake
   - curl -sSL https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz | sudo tar -xzC /opt
   - 'export PATH="/opt/cmake-3.7.2-Linux-x86_64/bin/:$PATH"'
@@ -47,7 +45,7 @@ install:
   - curl -sSL http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/${BOOST_DL_NAME}.tar.gz/download | tar -xzC /tmp
   - pushd /tmp/${BOOST_DL_NAME}
   - ./bootstrap.sh --prefix=/usr/local
-  - sudo ./b2 $BOOST_WITH -d0 -j 2 install
+  - sudo ./b2 toolset=$COMPILER $BOOST_WITH -d0 -j 2 install
   - popd
   - sudo rm -rf /tmp/${BOOST_DL_NAME}
 
