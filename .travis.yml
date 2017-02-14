@@ -1,0 +1,61 @@
+sudo: required
+dist: trusty
+language: cpp
+
+env:
+  global:
+    - BOOST_VERSION=1.61.0
+    - BOOST_DL_NAME=boost_1_61_0
+    - BOOST_WITH="--with-system --with-filesystem --with-test"
+
+matrix:
+  include:
+    - compiler: gcc
+      env: COMPILER=g++-5
+      before_install:
+        # install latest gcc 5
+        - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+        - sudo apt-get update -qq 
+        - sudo apt-get install -qq -y gcc-5 g++-5
+        # force travis to use it
+        - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
+        - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
+
+    - compiler: clang
+      env: COMPILER=clang-3.9
+      before_install:
+        # install clang 3.9 and gcc-5 for the updated libstdc++
+        - wget -nv -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
+        - sudo apt-add-repository -y 'deb http://llvm.org/apt/trusty llvm-toolchain-trusty-3.9 main'
+        - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+        - sudo apt-get update -qq
+        - sudo apt-get install -qq -y clang-3.9 gcc-5 g++-5
+        # force travis to use it
+        - sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-3.9 100
+        - sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-3.9 100
+        - export CC="/usr/bin/clang" CXX="/usr/bin/clang++"
+
+install:
+  - echo $PATH
+  
+  # install latest cmake
+  - curl -sSL https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz | sudo tar -xzC /opt
+  - 'export PATH="/opt/cmake-3.7.2-Linux-x86_64/bin/:$PATH"'
+  - cmake --version
+  
+  # install boost
+  - curl -sSL http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/${BOOST_DL_NAME}.tar.gz/download | tar -xzC /tmp
+  - pushd /tmp/${BOOST_DL_NAME}
+  - ./bootstrap.sh --prefix=/usr/local
+  - sudo ./b2 $BOOST_WITH -d0 -j 2 install
+  - popd
+  - sudo rm -rf /tmp/${BOOST_DL_NAME}
+
+script:
+  # configure
+  - mkdir build && cd build && cmake -D CMAKE_BUILD_TYPE=Release ..
+  # build
+  - make
+  # test
+  - ./tests/sexpr-cpp-tests
+  
