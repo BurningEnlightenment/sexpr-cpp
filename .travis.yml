@@ -4,6 +4,7 @@ language: cpp
 
 env:
   global:
+    - CXXFLAGS=--coverage
     - BOOST_VERSION=1.61.0
     - BOOST_DL_NAME=boost_1_61_0
     - BOOST_WITH="--with-system --with-filesystem --with-test"
@@ -36,6 +37,8 @@ matrix:
         - export CC="/usr/bin/clang" CXX="/usr/bin/clang++"
 
 install:
+  - pip install --user cpp-coveralls
+  
   # install latest cmake
   - curl -sSL https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz | sudo tar -xzC /opt
   - 'export PATH="/opt/cmake-3.7.2-Linux-x86_64/bin/:$PATH"'
@@ -51,9 +54,12 @@ install:
 
 script:
   # configure
-  - mkdir build && cd build && cmake -D CMAKE_BUILD_TYPE=Release ..
+  - mkdir build && cd build && cmake -D CMAKE_BUILD_TYPE=Debug  ..
   # build
   - make
   # test
-  - ./tests/sexpr-cpp-tests
+  - ./bin/sexpr-cpp-tests
+
+after_success:
+  - coveralls --exclude build/CMakeFiles --exclude tests --root .. --build-root . --gcov-options '\-lp'
   
