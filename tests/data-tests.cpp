@@ -13,7 +13,7 @@ BOOST_TEST_DONT_PRINT_LOG_VALUE(std::type_info)
 using namespace sexpr;
 
 
-BOOST_AUTO_TEST_SUITE(data_tests)
+BOOST_AUTO_TEST_SUITE(basic_node)
 
 BOOST_AUTO_TEST_SUITE(ctor_tests)
 
@@ -92,5 +92,39 @@ BOOST_AUTO_TEST_CASE(copy_ctor)
 
 BOOST_AUTO_TEST_SUITE_END()
 
+
+BOOST_AUTO_TEST_SUITE(accessor_tests)
+
+using namespace std::string_literals;
+
+
+BOOST_AUTO_TEST_CASE(string_getters)
+{
+    auto s = "foobar"s;
+    node ns(s);
+
+    BOOST_TEST(ns.is_string());
+    BOOST_TEST(ns.get_string() == s);
+    BOOST_CHECK_THROW(ns.get_list(), std::domain_error);
+    BOOST_TEST_REQUIRE(ns.try_get_string());
+    BOOST_TEST(*ns.try_get_string() == s);
+    BOOST_TEST(!ns.try_get_list());
+
+    
+}
+
+BOOST_AUTO_TEST_CASE(list_getters)
+{
+    node nl{};
+    BOOST_TEST(nl.is_list());
+    BOOST_TEST(nl.get_list() == node::list{});
+    BOOST_CHECK_THROW(nl.get_string(), std::domain_error);
+    BOOST_TEST_REQUIRE(nl.try_get_list());
+    BOOST_TEST(*nl.try_get_list() == node::list{});
+    BOOST_TEST(!nl.try_get_string());
+}
+
+
+BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
