@@ -120,35 +120,51 @@ BOOST_AUTO_TEST_CASE(copy_ctor)
 BOOST_AUTO_TEST_SUITE_END()
 
 
-BOOST_AUTO_TEST_SUITE(accessor_tests)
+struct accessor_fixture
+{
+    static constexpr char str_raw[] = "foobar";
+    const std::string str = str_raw;
+    node str_node = str_raw;
+    const node &str_cnode;
+
+    const std::vector<node> node_vector = { "first", "second", "third" };
+    node list_node;
+    const node &list_cnode;
+
+    accessor_fixture()
+        : str_cnode(str_node)
+        , list_node()
+        , list_cnode(list_node)
+    {
+        list_node = node(node_vector.begin(), node_vector.end());
+    }
+};
+
+constexpr char accessor_fixture::str_raw[];
+
+BOOST_FIXTURE_TEST_SUITE(accessor_tests, accessor_fixture)
 
 using namespace std::string_literals;
 
 
 BOOST_AUTO_TEST_CASE(string_getters)
 {
-    auto s = "foobar"s;
-    node ns(s);
-
-    BOOST_TEST(ns.is_string());
-    BOOST_TEST(ns.get_string() == s);
-    BOOST_CHECK_THROW(ns.get_list(), std::domain_error);
-    BOOST_TEST_REQUIRE(ns.try_get_string());
-    BOOST_TEST(*ns.try_get_string() == s);
-    BOOST_TEST(!ns.try_get_list());
-
-    
+    BOOST_TEST(str_node.is_string());
+    BOOST_TEST(!str_node.get_string().compare(str));
+    BOOST_CHECK_THROW(str_node.get_list(), std::domain_error);
+    BOOST_TEST_REQUIRE(str_node.try_get_string());
+    BOOST_TEST(!str_node.try_get_string()->compare(str));
+    BOOST_TEST(!str_node.try_get_list());
 }
 
 BOOST_AUTO_TEST_CASE(list_getters)
 {
-    node nl{};
-    BOOST_TEST(nl.is_list());
-    BOOST_TEST(nl.get_list() == node::list{});
-    BOOST_CHECK_THROW(nl.get_string(), std::domain_error);
-    BOOST_TEST_REQUIRE(nl.try_get_list());
-    BOOST_TEST(*nl.try_get_list() == node::list{});
-    BOOST_TEST(!nl.try_get_string());
+    BOOST_TEST(list_node.is_list());
+    BOOST_TEST(list_node.get_list() == node_vector);
+    BOOST_CHECK_THROW(list_node.get_string(), std::domain_error);
+    BOOST_TEST_REQUIRE(list_node.try_get_list());
+    BOOST_TEST(*list_node.try_get_list() == node_vector);
+    BOOST_TEST(!list_node.try_get_string());
 }
 
 
