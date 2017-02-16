@@ -125,9 +125,10 @@ public:
     {
     }
     template< std::size_t n >
-    basic_node(char (&str)[n])
-        : mContent( std::string{str, str+n} )
+    basic_node(const char (&str)[n], bool remove_trailing_null = true)
+        : mContent( std::string{str, n - (remove_trailing_null && !str[n-1]) } )
     {
+        static_assert(n, "you tried to initialize a node with a zero sized char array (which itself is illegal C++ anyway)");
     }
     template< class TInputIterator,
         std::enable_if_t<
