@@ -28,6 +28,21 @@ BOOST_AUTO_TEST_CASE(default_ctor)
     BOOST_TEST(n.empty());
 }
 
+BOOST_AUTO_TEST_CASE(char_array_ctor)
+{
+    static constexpr char raw_str[] = "foo\0bar";
+    const std::string str_w_null(raw_str, sizeof(raw_str));
+    const auto str = str_w_null.substr(0, str_w_null.size() - 1);
+
+    node n1(raw_str);
+    BOOST_TEST_REQUIRE(n1.is_string());
+    BOOST_TEST(n1.get_string() == str);
+
+    node n2(raw_str, false);
+    BOOST_TEST_REQUIRE(n2.is_string());
+    BOOST_TEST(n2.get_string() == str_w_null);
+}
+
 BOOST_AUTO_TEST_CASE(string_ctor)
 {
     using namespace std::string_literals;
