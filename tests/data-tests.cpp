@@ -56,43 +56,55 @@ BOOST_AUTO_TEST_CASE(string_ctor)
     BOOST_TEST(s == refstr);
 }
 
-BOOST_AUTO_TEST_CASE(init_ctor)
+BOOST_AUTO_TEST_CASE(init_ctor__empty)
+{
+    node n{};
+    BOOST_TEST_REQUIRE(n.is_list());
+    BOOST_TEST(n.empty());
+}
+
+BOOST_AUTO_TEST_CASE(init_ctor__single)
+{
+    using namespace std::string_literals;
+    const auto s1 = "foo"s;
+
+    node n{ s1 };
+    BOOST_TEST_REQUIRE(n.is_list());
+    BOOST_TEST_REQUIRE(!n.empty());
+    BOOST_TEST(n.size() == 1);
+    BOOST_TEST(n.at(0).is_string());
+    BOOST_TEST(n.at(0).get_string() == s1);
+}
+
+BOOST_AUTO_TEST_CASE(init_ctor__multi)
 {
     using namespace std::string_literals;
     std::string s1 = "foo", s2 = "bar", s3 = "baz";
 
-    node n0{};
-    BOOST_TEST_REQUIRE(n0.is_list());
-    BOOST_TEST(n0.empty());
+    node n{ s1,s2,s3 };
+    BOOST_TEST_REQUIRE(n.is_list());
+    BOOST_TEST_REQUIRE(!n.empty());
+    BOOST_TEST(n.size() == 3);
+    BOOST_TEST(n.at(0).is_string());
+    BOOST_TEST(n.at(0).get_string() == s1);
+    BOOST_TEST(n.at(1).is_string());
+    BOOST_TEST(n.at(1).get_string() == s2);
+    BOOST_TEST(n.at(2).is_string());
+    BOOST_TEST(s3 == n.at(2).get_string());
+}
 
-    node n1{s1};
-    BOOST_TEST_REQUIRE(n1.is_list());
-    BOOST_TEST_REQUIRE(!n1.empty());
-    BOOST_TEST(n1.size() == 1);
-    BOOST_TEST(n1.at(0).is_string());
-    BOOST_TEST(n1.at(0).get_string() == s1);
-
-    node n2{s1,s2,s3};
-    BOOST_TEST_REQUIRE(n2.is_list());
-    BOOST_TEST_REQUIRE(!n2.empty());
-    BOOST_TEST(n2.size() == 3);
-    BOOST_TEST(n2.at(0).is_string());
-    BOOST_TEST(n2.at(0).get_string() == s1);
-    BOOST_TEST(n2.at(1).is_string());
-    BOOST_TEST(n2.at(1).get_string() == s2);
-    BOOST_TEST(n2.at(2).is_string());
-    BOOST_CHECK_EQUAL(n2.at(2), s3);
-
-    node n3{"foo"s,{"bar"s, "baz"s},{"foobar"s}, "oh my"s};
-    BOOST_TEST_REQUIRE(n3.is_list());
-    BOOST_TEST_REQUIRE(n3.size() == 4);
-    BOOST_TEST(n3[0].is_string());
-    BOOST_TEST(n3[1].is_list());
-    BOOST_TEST(n3[1].size() == 2);
-    BOOST_TEST(n3[1][0].is_string());
-    BOOST_TEST(n3[2].is_list());
-    BOOST_TEST(n3[2].size() == 1);
-    BOOST_TEST(n3[3].is_string());
+BOOST_AUTO_TEST_CASE(init_ctor__complex)
+{
+    node n{ "foo",{ "bar", "baz" },{ "foobar" }, "oh my" };
+    BOOST_TEST_REQUIRE(n.is_list());
+    BOOST_TEST_REQUIRE(n.size() == 4);
+    BOOST_TEST(n[0].is_string());
+    BOOST_TEST(n[1].is_list());
+    BOOST_TEST(n[1].size() == 2);
+    BOOST_TEST(n[1][0].is_string());
+    BOOST_TEST(n[2].is_list());
+    BOOST_TEST(n[2].size() == 1);
+    BOOST_TEST(n[3].is_string());
 }
 
 BOOST_AUTO_TEST_CASE(copy_ctor)
