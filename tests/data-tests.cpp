@@ -167,6 +167,70 @@ BOOST_AUTO_TEST_CASE(list_getters)
     BOOST_TEST(!list_node.try_get_string());
 }
 
+BOOST_AUTO_TEST_CASE(list_container_emulation)
+{
+    BOOST_TEST(list_node.get_list() == node_vector);
+
+    BOOST_TEST(list_node.at(0) == node_vector.at(0));
+    BOOST_TEST(list_node.at(1) == node_vector.at(1));
+    BOOST_TEST(list_node.at(2) == node_vector.at(2));
+    BOOST_TEST(list_cnode.at(0) == node_vector.at(0));
+    BOOST_TEST(list_cnode.at(1) == node_vector.at(1));
+    BOOST_TEST(list_cnode.at(2) == node_vector.at(2));
+
+    BOOST_CHECK_THROW(list_node.at(3), std::exception);
+    BOOST_TEST(list_node.at(0) == list_node[0]);
+    BOOST_TEST(list_node.at(1) == list_node[1]);
+    BOOST_TEST(list_node.at(2) == list_node[2]);
+    BOOST_TEST(list_node.at(0) == list_cnode[0]);
+    BOOST_TEST(list_node.at(1) == list_cnode[1]);
+    BOOST_TEST(list_node.at(2) == list_cnode[2]);
+
+    BOOST_TEST(list_node.front() == node_vector.front());
+    BOOST_TEST(list_cnode.front() == node_vector.front());
+
+    BOOST_TEST(list_node.back() == node_vector.back());
+    BOOST_TEST(list_cnode.back() == node_vector.back());
+
+    BOOST_TEST(list_node.empty() == node_vector.empty());
+    BOOST_TEST(list_cnode.empty() == node_vector.empty());
+
+    BOOST_TEST(list_node.size() == node_vector.size());
+    BOOST_TEST(list_cnode.size() == node_vector.size());
+
+    BOOST_TEST(list_node.max_size() >= list_node.size());
+    BOOST_TEST(list_cnode.max_size() >= list_cnode.size());
+    BOOST_TEST(list_cnode.max_size() >= list_node.max_size());
+}
+
+BOOST_AUTO_TEST_CASE(string_container_emulation)
+{
+    BOOST_CHECK_THROW(str_node.at(0), std::domain_error);
+    BOOST_CHECK_THROW(str_node.at(1), std::domain_error);
+    BOOST_CHECK_THROW(str_cnode.at(0), std::domain_error);
+    BOOST_CHECK_THROW(str_cnode.at(1), std::domain_error);
+
+    BOOST_CHECK_THROW(str_node[0], std::domain_error);
+    BOOST_CHECK_THROW(str_node[1], std::domain_error);
+    BOOST_CHECK_THROW(str_cnode[0], std::domain_error);
+    BOOST_CHECK_THROW(str_cnode[1], std::domain_error);
+
+    BOOST_CHECK_THROW(str_node.front(), std::domain_error);
+    BOOST_CHECK_THROW(str_cnode.front(), std::domain_error);
+
+    BOOST_CHECK_THROW(str_node.back(), std::domain_error);
+    BOOST_CHECK_THROW(str_cnode.back(), std::domain_error);
+
+    BOOST_TEST(!str_node.empty());
+    BOOST_TEST(!str_cnode.empty());
+
+    BOOST_TEST(str_node.size() == 1);
+    BOOST_TEST(str_cnode.size() == 1);
+
+    BOOST_TEST(str_node.max_size() == 1);
+    BOOST_TEST(str_cnode.max_size() == 1);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
