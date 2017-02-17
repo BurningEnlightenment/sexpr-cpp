@@ -714,8 +714,12 @@ inline bool operator>=(const basic_node<TString, TList, TStringTraits, TListTrai
 
 
 
-template< class TString, template<class, class...> class TList >
-inline void swap(basic_node<TString, TList> &lhs, basic_node<TString, TList> &rhs)
+template< class TString,
+    template<class, class...> class TList,
+    class TStringTraits,
+    class TListTraits >
+inline void swap(basic_node<TString, TList, TStringTraits, TListTraits> &lhs,
+    basic_node<TString, TList, TStringTraits, TListTraits> &rhs)
     noexcept(noexcept(lhs.swap(rhs)))
 {
     lhs.swap(rhs);
