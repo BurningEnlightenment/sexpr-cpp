@@ -255,6 +255,42 @@ BOOST_AUTO_TEST_CASE(explicit_string_conversion)
     BOOST_CHECK_THROW(static_cast<node::string>(list_cnode), std::domain_error);
 }
 
+BOOST_AUTO_TEST_CASE(string_container_iterators)
+{
+    BOOST_CHECK_THROW(str_node.begin(), std::domain_error);
+    BOOST_CHECK_THROW(str_cnode.begin(), std::domain_error);
+    BOOST_CHECK_THROW(str_node.cbegin(), std::domain_error);
+
+    BOOST_CHECK_THROW(str_node.end(), std::domain_error);
+    BOOST_CHECK_THROW(str_cnode.end(), std::domain_error);
+    BOOST_CHECK_THROW(str_node.cend(), std::domain_error);
+
+    BOOST_CHECK_THROW(str_node.rbegin(), std::domain_error);
+    BOOST_CHECK_THROW(str_cnode.rbegin(), std::domain_error);
+    BOOST_CHECK_THROW(str_node.crbegin(), std::domain_error);
+
+    BOOST_CHECK_THROW(str_node.rend(), std::domain_error);
+    BOOST_CHECK_THROW(str_cnode.rend(), std::domain_error);
+    BOOST_CHECK_THROW(str_node.crend(), std::domain_error);
+}
+
+BOOST_AUTO_TEST_CASE(list_container_iterators)
+{
+    BOOST_CHECK_EQUAL_COLLECTIONS(list_node.begin(), list_node.end(),
+        node_vector.begin(), node_vector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(list_cnode.begin(), list_cnode.end(),
+        node_vector.begin(), node_vector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(list_cnode.cbegin(), list_cnode.cend(),
+        node_vector.begin(), node_vector.end());
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(list_node.rbegin(), list_node.rend(),
+        node_vector.rbegin(), node_vector.rend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(list_cnode.rbegin(), list_cnode.rend(),
+        node_vector.rbegin(), node_vector.rend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(list_cnode.crbegin(), list_cnode.crend(),
+        node_vector.rbegin(), node_vector.rend());
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
