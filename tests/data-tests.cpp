@@ -124,7 +124,7 @@ struct accessor_fixture
 {
     static constexpr char str_raw[] = "foobar";
     const std::string str = str_raw;
-    node str_node = str_raw;
+    node str_node;
     const node &str_cnode;
 
     const std::vector<node> node_vector = { "first", "second", "third" };
@@ -132,7 +132,8 @@ struct accessor_fixture
     const node &list_cnode;
 
     accessor_fixture()
-        : str_cnode(str_node)
+        : str_node(str_raw)
+        , str_cnode(str_node)
         , list_node()
         , list_cnode(list_node)
     {
@@ -230,6 +231,8 @@ BOOST_AUTO_TEST_CASE(string_container_emulation)
     BOOST_TEST(str_node.max_size() == 1);
     BOOST_TEST(str_cnode.max_size() == 1);
 }
+
+
 
 
 BOOST_AUTO_TEST_SUITE_END()
