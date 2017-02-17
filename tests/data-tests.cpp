@@ -332,4 +332,205 @@ BOOST_AUTO_TEST_CASE(string_container_ops_test)
     BOOST_CHECK_THROW(s_node.resize(3, dummy), std::domain_error);
 }
 
+struct container_ops_fixture
+{
+    const std::vector<node> node_vector = { "first", "second", "third" };
+    node list_node;
+    const size_t init_size = 3;
+
+    node elem;
+    const node celem;
+
+    const std::list<node> node_list = { "i-first", "i-second", "i-third" };
+
+    container_ops_fixture()
+        : list_node()
+        , elem("elem")
+        , celem("elem")
+    {
+        list_node = node(node_vector.begin(), node_vector.end());
+    }
+};
+
+BOOST_FIXTURE_TEST_SUITE(container_mod_tests, container_ops_fixture)
+
+
+BOOST_AUTO_TEST_CASE(list_clear)
+{
+    BOOST_TEST_REQUIRE(!list_node.empty());
+    list_node.clear();
+    BOOST_TEST_REQUIRE(list_node.empty());
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_copy__begin)
+{
+    list_node.insert(list_node.begin(), celem);
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + 1);
+    BOOST_TEST(list_node.front() == celem);
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_move__begin)
+{
+    list_node.insert(list_node.begin(), std::move(elem));
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + 1);
+    BOOST_TEST(list_node.front() == celem);
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_copy__mid)
+{
+    list_node.insert(++list_node.begin(), celem);
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + 1);
+    BOOST_TEST(list_node.at(1) == celem);
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_move__mid)
+{
+    list_node.insert(++list_node.begin(), std::move(elem));
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + 1);
+    BOOST_TEST(list_node.at(1) == celem);
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_copy__end)
+{
+    list_node.insert(list_node.end(), celem);
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + 1);
+    BOOST_TEST(list_node.back() == celem);
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_move__end)
+{
+    list_node.insert(list_node.end(), std::move(elem));
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + 1);
+    BOOST_TEST(list_node.back() == celem);
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_multi__begin)
+{
+    list_node.insert(list_node.begin(), 2, celem);
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + 2);
+    BOOST_TEST(list_node.front() == celem);
+    BOOST_TEST(list_node.at(1) == celem);
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_multi__mid)
+{
+    list_node.insert(++list_node.begin(), 2, celem);
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + 2);
+    BOOST_TEST(list_node.at(1) == celem);
+    BOOST_TEST(list_node.at(2) == celem);
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_multi__end)
+{
+    list_node.insert(list_node.end(), 2, celem);
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + 2);
+    BOOST_TEST(list_node.at(list_node.size() - 2) == celem);
+    BOOST_TEST(list_node.back() == celem);
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_iterator__begin)
+{
+    list_node.insert(list_node.begin(), node_list.begin(), node_list.end());
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + node_list.size());
+
+    auto nbegin = list_node.begin();
+    auto nend = nbegin + node_list.size();
+    BOOST_CHECK_EQUAL_COLLECTIONS(nbegin, nend, node_list.begin(), node_list.end());
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_iterator__mid)
+{
+    list_node.insert(++list_node.begin(), node_list.begin(), node_list.end());
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + node_list.size());
+
+    auto nbegin = ++list_node.begin();
+    auto nend = nbegin + node_list.size();
+    BOOST_CHECK_EQUAL_COLLECTIONS(nbegin, nend, node_list.begin(), node_list.end());
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_iterator__end)
+{
+    list_node.insert(list_node.end(), node_list.begin(), node_list.end());
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + node_list.size());
+
+    auto nend = list_node.end();
+    auto nbegin = nend - node_list.size();
+    BOOST_CHECK_EQUAL_COLLECTIONS(nbegin, nend, node_list.begin(), node_list.end());
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_init_list__begin)
+{
+    list_node.insert(list_node.begin(), { "i-first", "i-second", "i-third" });
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + node_list.size());
+
+    auto nbegin = list_node.begin();
+    auto nend = nbegin + node_list.size();
+    BOOST_CHECK_EQUAL_COLLECTIONS(nbegin, nend, node_list.begin(), node_list.end());
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_init_list__mid)
+{
+    list_node.insert(++list_node.begin(), { "i-first", "i-second", "i-third" });
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + node_list.size());
+
+    auto nbegin = ++list_node.begin();
+    auto nend = nbegin + node_list.size();
+    BOOST_CHECK_EQUAL_COLLECTIONS(nbegin, nend, node_list.begin(), node_list.end());
+}
+
+BOOST_AUTO_TEST_CASE(list_insert_init_list__end)
+{
+    list_node.insert(list_node.end(), { "i-first", "i-second", "i-third" });
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + node_list.size());
+
+    auto nend = list_node.end();
+    auto nbegin = nend - node_list.size();
+    BOOST_CHECK_EQUAL_COLLECTIONS(nbegin, nend, node_list.begin(), node_list.end());
+}
+
+BOOST_AUTO_TEST_CASE(list_erase)
+{
+    list_node.erase(list_node.begin());
+    BOOST_TEST_REQUIRE(list_node.size() == init_size - 1);
+    BOOST_TEST(list_node.at(0) == "second");
+}
+
+BOOST_AUTO_TEST_CASE(list_erase_range)
+{
+    list_node.erase(list_node.begin(), --list_node.end());
+    BOOST_TEST_REQUIRE(list_node.size() == 1);
+    BOOST_TEST(list_node.at(0) == "third");
+}
+
+BOOST_AUTO_TEST_CASE(list_resize__grow)
+{
+    list_node.resize(init_size + 1);
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + 1);
+    BOOST_TEST(list_node.back() == node());
+}
+
+BOOST_AUTO_TEST_CASE(list_resize__shrink)
+{
+    list_node.resize(init_size - 1);
+    BOOST_TEST_REQUIRE(list_node.size() == init_size - 1);
+    BOOST_TEST(list_node.back() == node_vector.at(init_size - 2));
+}
+
+BOOST_AUTO_TEST_CASE(list_resize_with_value__grow)
+{
+    list_node.resize(init_size + 1, celem);
+    BOOST_TEST_REQUIRE(list_node.size() == init_size + 1);
+    BOOST_TEST(list_node.back() == celem);
+}
+
+BOOST_AUTO_TEST_CASE(list_resize_with_value__shrink)
+{
+    list_node.resize(init_size - 1, celem);
+    BOOST_TEST_REQUIRE(list_node.size() == init_size - 1);
+    BOOST_TEST(list_node.back() == node_vector.at(init_size - 2));
+}
+
+
+BOOST_AUTO_TEST_SUITE_END()
+
 BOOST_AUTO_TEST_SUITE_END()
