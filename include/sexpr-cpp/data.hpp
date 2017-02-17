@@ -433,7 +433,7 @@ public:
     {
         if (auto pl = try_get_as<list>())
         {
-            return iterator(pl->insert(pos, value));
+            return iterator(pl->insert(pos.base(), value));
         }
         throw std::domain_error("basic_node::insert() can only be used with lists");
     }
@@ -441,7 +441,7 @@ public:
     {
         if (auto pl = try_get_as<list>())
         {
-            return iterator(pl->insert(pos, std::forward<basic_node>(value)));
+            return iterator(pl->insert(pos.base(), std::forward<basic_node>(value)));
         }
         throw std::domain_error("basic_node::insert() can only be used with lists");
     }
@@ -449,7 +449,7 @@ public:
     {
         if (auto pl = try_get_as<list>())
         {
-            return iterator(pl->insert(pos, count, value));
+            return iterator(pl->insert(pos.base(), count, value));
         }
         throw std::domain_error("basic_node::insert() can only be used with lists");
     }
@@ -458,7 +458,7 @@ public:
     {
         if (auto pl = try_get_as<list>())
         {
-            return iterator(pl->insert(pos, first, last));
+            return iterator(pl->insert(pos.base(), first, last));
         }
         throw std::domain_error("basic_node::insert() can only be used with lists");
     }
@@ -466,7 +466,7 @@ public:
     {
         if (auto pl = try_get_as<list>())
         {
-            return iterator(pl->insert(pos, std::move(il)));
+            return iterator(pl->insert(pos.base(), std::move(il)));
         }
         throw std::domain_error("basic_node::insert() can only be used with lists");
     }
@@ -475,7 +475,7 @@ public:
     {
         if (auto pl = try_get_as<list>())
         {
-            pl->erase(pos);
+            pl->erase(pos.base());
         }
         throw std::domain_error("basic_node::erase() can only be used with lists");
     }
@@ -483,7 +483,7 @@ public:
     {
         if (auto pl = try_get_as<list>())
         {
-            pl->erase(first, last);
+            pl->erase(first.base(), last.base());
         }
         throw std::domain_error("basic_node::erase() can only be used with lists");
     }
