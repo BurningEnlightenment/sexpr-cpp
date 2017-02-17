@@ -484,7 +484,10 @@ public:
         {
             pl->erase(pos.base());
         }
-        throw std::domain_error("basic_node::erase() can only be used with lists");
+        else
+        {
+            throw std::domain_error("basic_node::erase() can only be used with lists");
+        }
     }
     void erase(const_iterator first, const_iterator last)
     {
@@ -492,7 +495,10 @@ public:
         {
             pl->erase(first.base(), last.base());
         }
-        throw std::domain_error("basic_node::erase() can only be used with lists");
+        else
+        {
+            throw std::domain_error("basic_node::erase() can only be used with lists");
+        }
     }
 
     void push_back(const basic_node &value)
@@ -501,7 +507,10 @@ public:
         {
             pl->push_back(value);
         }
-        throw std::domain_error("basic_node::push_back() can only be used with lists");
+        else
+        {
+            throw std::domain_error("basic_node::erase() can only be used with lists");
+        }
     }
     void push_back(basic_node &&value)
     {
@@ -509,7 +518,10 @@ public:
         {
             pl->push_back(std::forward<basic_node>(value));
         }
-        throw std::domain_error("basic_node::push_back() can only be used with lists");
+        else
+        {
+            throw std::domain_error("basic_node::erase() can only be used with lists");
+        }
     }
 
     template< typename... TArgs >
@@ -528,7 +540,10 @@ public:
         {
             pl->pop_back();
         }
-        throw std::domain_error("basic_node::pop_back() can only be used with lists");
+        else
+        {
+            throw std::domain_error("basic_node::erase() can only be used with lists");
+        }
     }
 
     void resize(size_type count)
@@ -537,7 +552,10 @@ public:
         {
             pl->resize(count);
         }
-        throw std::domain_error("basic_node::resize() can only be used with lists");
+        else
+        {
+            throw std::domain_error("basic_node::erase() can only be used with lists");
+        }
     }
     void resize(size_type count, const basic_node &value)
     {
@@ -545,7 +563,10 @@ public:
         {
             pl->resize(count, value);
         }
-        throw std::domain_error("basic_node::resize() can only be used with lists");
+        else
+        {
+            throw std::domain_error("basic_node::erase() can only be used with lists");
+        }
     }
 
     void swap(basic_node &other)
