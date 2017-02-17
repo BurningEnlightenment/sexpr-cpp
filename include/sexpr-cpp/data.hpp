@@ -103,6 +103,13 @@ private:
             : basic_iterator::iterator_adaptor_(v)
         {
         }
+
+        template<class OtherValue,
+            std::enable_if_t<std::is_convertible<OtherValue*, T*>::value, int> = 0>
+        basic_iterator(const basic_iterator<OtherValue> &other)
+            : basic_iterator::iterator_adaptor_(other.base())
+        {
+        }
     };
 
 public:
