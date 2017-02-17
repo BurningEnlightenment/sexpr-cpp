@@ -246,7 +246,14 @@ BOOST_AUTO_TEST_CASE(string_container_emulation)
     BOOST_TEST(str_cnode.max_size() == 1);
 }
 
+BOOST_AUTO_TEST_CASE(explicit_string_conversion)
+{
+    node::string s(str_cnode);
+    BOOST_TEST(s == str_cnode.get_string());
+    BOOST_TEST(static_cast<node::string>(str_cnode) == str_cnode.get_string());
 
+    BOOST_CHECK_THROW(static_cast<node::string>(list_cnode), std::domain_error);
+}
 
 
 BOOST_AUTO_TEST_SUITE_END()

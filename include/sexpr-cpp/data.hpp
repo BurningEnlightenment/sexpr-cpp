@@ -147,7 +147,7 @@ public:
     {
     }
 
-    explicit operator string()
+    explicit operator string() const
     {
         if (auto ps = try_get_as<string>())
         {
