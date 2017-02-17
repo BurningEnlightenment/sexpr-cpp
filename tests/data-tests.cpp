@@ -533,4 +533,40 @@ BOOST_AUTO_TEST_CASE(list_resize_with_value__shrink)
 
 BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_CASE(swap__string)
+{
+    const node cnl("left"), cnr("right");
+    node nl(cnl), nr(cnr);
+
+    using std::swap;
+    swap(nl, nr);
+
+    BOOST_TEST(nl == cnr);
+    BOOST_TEST(nr == cnl);
+}
+
+BOOST_AUTO_TEST_CASE(swap__list)
+{
+    const node cnl{ "left" }, cnr{ "right" };
+    node nl(cnl), nr(cnr);
+
+    using std::swap;
+    swap(nl, nr);
+
+    BOOST_TEST(nl == cnr);
+    BOOST_TEST(nr == cnl);
+}
+
+BOOST_AUTO_TEST_CASE(swap__different)
+{
+    const node cnl("left"), cnr{ "right" };
+    node nl(cnl), nr(cnr);
+
+    using std::swap;
+    swap(nl, nr);
+
+    BOOST_TEST(nl == cnr);
+    BOOST_TEST(nr == cnl);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
