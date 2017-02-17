@@ -156,6 +156,13 @@ BOOST_AUTO_TEST_CASE(string_getters)
     BOOST_TEST_REQUIRE(str_node.try_get_string());
     BOOST_TEST(!str_node.try_get_string()->compare(str));
     BOOST_TEST(!str_node.try_get_list());
+
+    BOOST_TEST(str_cnode.is_string());
+    BOOST_TEST(!str_cnode.get_string().compare(str));
+    BOOST_CHECK_THROW(str_cnode.get_list(), std::domain_error);
+    BOOST_TEST_REQUIRE(str_cnode.try_get_string());
+    BOOST_TEST(!str_cnode.try_get_string()->compare(str));
+    BOOST_TEST(!str_cnode.try_get_list());
 }
 
 BOOST_AUTO_TEST_CASE(list_getters)
@@ -166,6 +173,13 @@ BOOST_AUTO_TEST_CASE(list_getters)
     BOOST_TEST_REQUIRE(list_node.try_get_list());
     BOOST_TEST(*list_node.try_get_list() == node_vector);
     BOOST_TEST(!list_node.try_get_string());
+
+    BOOST_TEST(list_cnode.is_list());
+    BOOST_TEST(list_cnode.get_list() == node_vector);
+    BOOST_CHECK_THROW(list_cnode.get_string(), std::domain_error);
+    BOOST_TEST_REQUIRE(list_cnode.try_get_list());
+    BOOST_TEST(*list_cnode.try_get_list() == node_vector);
+    BOOST_TEST(!list_cnode.try_get_string());
 }
 
 BOOST_AUTO_TEST_CASE(list_container_emulation)
