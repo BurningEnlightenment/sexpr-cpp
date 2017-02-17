@@ -294,4 +294,42 @@ BOOST_AUTO_TEST_CASE(list_container_iterators)
 
 BOOST_AUTO_TEST_SUITE_END()
 
+
+BOOST_AUTO_TEST_CASE(string_clear_test)
+{
+    node s_node("some-str content");
+    BOOST_TEST_REQUIRE(s_node.is_string());
+    BOOST_TEST_REQUIRE(!s_node.get_string().empty());
+    s_node.clear();
+    BOOST_TEST(s_node.get_string().empty());
+}
+
+BOOST_AUTO_TEST_CASE(string_container_ops_test)
+{
+    node dummy;
+    node s_node("some-str content");
+    std::list<node> node_list;
+
+    BOOST_CHECK_THROW(s_node.insert(node::const_iterator(), dummy), std::domain_error);
+    BOOST_CHECK_THROW(s_node.insert(node::const_iterator(), std::move(dummy)), std::domain_error);
+    BOOST_CHECK_THROW(s_node.insert(node::const_iterator(), 3, dummy), std::domain_error);
+    BOOST_CHECK_THROW(s_node.insert(node::const_iterator(), 3, std::move(dummy)), std::domain_error);
+    BOOST_CHECK_THROW(s_node.insert(node::const_iterator(), node_list.begin(), node_list.end()), std::domain_error);
+    BOOST_CHECK_THROW(s_node.insert(node::const_iterator(), {}), std::domain_error);
+
+    BOOST_CHECK_THROW(s_node.erase(node::const_iterator()), std::domain_error);
+    BOOST_CHECK_THROW(s_node.erase(node::const_iterator(), node::const_iterator()), std::domain_error);
+
+    BOOST_CHECK_THROW(s_node.push_back(dummy), std::domain_error);
+    BOOST_CHECK_THROW(s_node.push_back(std::move(dummy)), std::domain_error);
+
+    BOOST_CHECK_THROW(s_node.emplace_back(), std::domain_error);
+    BOOST_CHECK_THROW(s_node.emplace_back("blublbub"), std::domain_error);
+
+    BOOST_CHECK_THROW(s_node.pop_back(), std::domain_error);
+
+    BOOST_CHECK_THROW(s_node.resize(3), std::domain_error);
+    BOOST_CHECK_THROW(s_node.resize(3, dummy), std::domain_error);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
