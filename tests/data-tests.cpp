@@ -11,6 +11,7 @@
 
 BOOST_TEST_DONT_PRINT_LOG_VALUE(std::type_info)
 using namespace sexpr;
+namespace bdata = boost::unit_test::data;
 
 
 BOOST_AUTO_TEST_SUITE(basic_node)
@@ -533,6 +534,7 @@ BOOST_AUTO_TEST_CASE(list_resize_with_value__shrink)
 
 BOOST_AUTO_TEST_SUITE_END()
 
+
 BOOST_AUTO_TEST_CASE(swap__string)
 {
     const node cnl("left"), cnr("right");
@@ -567,6 +569,50 @@ BOOST_AUTO_TEST_CASE(swap__different)
 
     BOOST_TEST(nl == cnr);
     BOOST_TEST(nr == cnl);
+}
+
+
+BOOST_DATA_TEST_CASE(equality_case, bdata::make(std::initializer_list<node>{
+    node(),
+    "abcd",
+    { "first", "second", "third" },
+    { { "1first", "1second" }, "second",{ { "31first" }, "3second" } }
+}))
+{
+    BOOST_TEST(sample == sample);
+    BOOST_TEST(sample <= sample);
+    BOOST_TEST(sample >= sample);
+    BOOST_TEST(!(sample != sample));
+    BOOST_TEST(!(sample < sample));
+    BOOST_TEST(!(sample > sample));
+}
+
+std::vector<node> generate_comparison_nodes()
+{
+    static std::vector<node> data = {
+        "",
+        "abcd",
+        "abcde",
+        node(),
+        { "first", "second", "third" },
+        { "first", "second", "third", "fourth" },
+        { "first", "zecond", "third" },
+        { { "1first", "1second" }, "second",{ { "31first" }, "3second" } },
+        { { "2first", "1second" }, "second",{ { "31first" }, "3second" } }
+    };
+    return data;
+}
+
+BOOST_DATA_TEST_CASE(comparison_test,
+    (bdata::make(generate_comparison_nodes()) ^ bdata::xrange(generate_comparison_nodes().size()))
+    * (bdata::make(generate_comparison_nodes()) ^ bdata::xrange(generate_comparison_nodes().size()))
+    , val1, idx1, val2, idx2)
+{
+    BOOST_TEST((val1 == val2) == (idx1 == idx2));
+    BOOST_TEST((val1 < val2) == (idx1 < idx2));
+    BOOST_TEST((val1 <= val2) == (idx1 <= idx2));
+    BOOST_TEST((val1 > val2) == (idx1 > idx2));
+    BOOST_TEST((val1 >= val2) == (idx1 >= idx2));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
