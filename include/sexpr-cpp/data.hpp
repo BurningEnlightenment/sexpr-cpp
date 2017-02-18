@@ -45,7 +45,7 @@ struct std_list_traits
 
         for (; lit != lend && rit != rend; ++lit, ++rit)
         {
-            if (auto i = comp(*lit, *lend))
+            if (auto i = comp(*lit, *rit))
             {
                 return i;
             }
